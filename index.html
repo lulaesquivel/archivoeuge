@@ -24,8 +24,133 @@
   body {
     background: var(--white); color: var(--ink);
     font-family: var(--font-body); font-weight: 300;
-    min-height: 100vh; display: flex; flex-direction: column;
-    max-width: 430px; margin: 0 auto;
+    min-height: 100vh;
+  }
+
+  /* ── MOBILE wrapper ── */
+  #app-shell {
+    display: flex;
+    flex-direction: column;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+
+  /* ── DESKTOP layout ── */
+  @media (min-width: 768px) {
+    body { background: var(--white); }
+
+    #app-shell {
+      max-width: 100%;
+      flex-direction: row;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    #sidebar {
+      width: 220px;
+      min-width: 220px;
+      border-right: 1px solid var(--gray-light);
+      display: flex;
+      flex-direction: column;
+      padding: 36px 24px 24px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    #sidebar .logo { font-size: 24px; margin-bottom: 32px; display: block; }
+
+    #sidebar-filters { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+
+    .sidebar-pill {
+      font-family: var(--font-body); font-size: 11px; font-weight: 300;
+      letter-spacing: 0.06em; text-transform: uppercase; padding: 7px 12px;
+      border: none; background: transparent; color: var(--gray-dim);
+      cursor: pointer; transition: all 0.15s ease; text-align: left;
+    }
+    .sidebar-pill.active { background: var(--ink); color: var(--white); }
+    .sidebar-pill:hover:not(.active) { color: var(--ink); }
+
+    .sidebar-section-label {
+      font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gray-light); margin: 20px 0 8px 12px;
+    }
+
+    /* Sidebar nav buttons */
+    #sidebar-nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px; }
+    .sidebar-nav-btn {
+      font-family: var(--font-body); font-size: 11px; font-weight: 300;
+      letter-spacing: 0.06em; text-transform: uppercase; padding: 7px 12px;
+      border: none; background: transparent; color: var(--gray-dim);
+      cursor: pointer; transition: all 0.15s ease; text-align: left;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sidebar-nav-btn svg { width: 14px; height: 14px; stroke-width: 1.5; }
+    .sidebar-nav-btn.active { color: var(--ink); font-weight: 400; }
+    .sidebar-nav-btn:hover:not(.active) { color: var(--ink); }
+
+    /* Add button in sidebar */
+    #sidebar-add-btn {
+      margin-top: auto;
+      padding: 12px;
+      background: var(--ink); color: var(--white);
+      border: none; cursor: pointer;
+      font-family: var(--font-body); font-size: 11px; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      transition: opacity 0.15s;
+    }
+    #sidebar-add-btn:hover { opacity: 0.75; }
+
+    /* Main content area */
+    #main-content {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Hide mobile-only elements */
+    nav { display: none !important; }
+    #filters-section { display: none !important; }
+    header { padding: 32px 32px 0; }
+
+    /* Grid — more columns on desktop */
+    .grid-wrap {
+      padding: 16px 24px 40px;
+      columns: 3;
+    }
+
+    .project-detail-grid {
+      padding: 16px 24px;
+      columns: 3;
+    }
+
+    /* Wider projects view */
+    .projects-view { padding: 32px 32px 40px; }
+    .project-detail-view { padding-bottom: 40px; }
+    .project-detail-topbar { padding: 28px 32px 0; }
+    .project-detail-name { padding: 8px 32px 0; }
+
+    /* Panels full-screen centered on desktop */
+    .panel {
+      max-width: 520px;
+      border-left: 1px solid var(--gray-light);
+      border-right: 1px solid var(--gray-light);
+    }
+
+    .detail-panel {
+      max-width: 600px;
+      border-left: 1px solid var(--gray-light);
+      border-right: 1px solid var(--gray-light);
+    }
+
+    @media (min-width: 1200px) {
+      #sidebar { width: 260px; min-width: 260px; }
+      .grid-wrap { columns: 4; }
+      .project-detail-grid { columns: 4; }
+    }
   }
 
   /* Loading screen */
@@ -227,6 +352,40 @@
 </style>
 </head>
 <body>
+
+<div id="app-shell">
+
+<!-- SIDEBAR (desktop only) -->
+<aside id="sidebar" style="display:none">
+  <div class="logo">archiv<span>o</span></div>
+
+  <div id="sidebar-nav">
+    <button class="sidebar-nav-btn active" id="snav-home" onclick="showView('home')">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9.75L12 3l9 6.75V21a.75.75 0 01-.75.75H3.75A.75.75 0 013 21V9.75z"/></svg>
+      Inicio
+    </button>
+    <button class="sidebar-nav-btn" id="snav-projects" onclick="showView('projects')">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/></svg>
+      Proyectos
+    </button>
+  </div>
+
+  <div class="sidebar-section-label">Categorías</div>
+  <div id="sidebar-filters">
+    <button class="sidebar-pill active" data-scat="todos" onclick="sidebarFilter(event,'todos')">Todos</button>
+    <button class="sidebar-pill" data-scat="Proveedor" onclick="sidebarFilter(event,'Proveedor')">Proveedor</button>
+    <button class="sidebar-pill" data-scat="Referencia" onclick="sidebarFilter(event,'Referencia')">Referencia</button>
+    <button class="sidebar-pill" data-scat="Material" onclick="sidebarFilter(event,'Material')">Material</button>
+    <button class="sidebar-pill" data-scat="Estilo" onclick="sidebarFilter(event,'Estilo')">Estilo</button>
+    <button class="sidebar-pill" data-scat="Detalle" onclick="sidebarFilter(event,'Detalle')">Detalle</button>
+    <button class="sidebar-pill" data-scat="Otro" onclick="sidebarFilter(event,'Otro')">Otro</button>
+  </div>
+
+  <button id="sidebar-add-btn" onclick="openAddPanel()">+ Nueva pieza</button>
+</aside>
+
+<!-- MAIN CONTENT -->
+<div id="main-content">
 
 <div id="loading-screen">
   <div class="loading-logo">archiv<span>o</span></div>
@@ -480,6 +639,46 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
   let pendingFile       = null;
   let isOnline          = navigator.onLine;
 
+
+  // ── DESKTOP SIDEBAR ──
+  function isDesktop() { return window.innerWidth >= 768; }
+
+  function initSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    if (isDesktop()) {
+      sidebar.style.display = 'flex';
+      // Hide mobile header on desktop since sidebar has the logo
+      document.querySelector('header').style.display = 'none';
+    } else {
+      sidebar.style.display = 'none';
+      document.querySelector('header').style.display = '';
+    }
+  }
+
+  window.addEventListener('resize', initSidebar);
+  initSidebar();
+
+  function sidebarFilter(e, cat) {
+    currentFilter = cat;
+    document.querySelectorAll('[data-scat]').forEach(p => p.classList.remove('active'));
+    e.target.classList.add('active');
+    // also sync mobile pills
+    document.querySelectorAll('[data-cat]').forEach(p => p.classList.remove('active'));
+    const mobileEl = document.querySelector(`[data-cat="${cat}"]`);
+    if (mobileEl) mobileEl.classList.add('active');
+    if (currentView !== 'home') showView('home');
+    else renderGrid();
+  }
+
+  function syncSidebarNav(view) {
+    document.querySelectorAll('.sidebar-nav-btn').forEach(b => b.classList.remove('active'));
+    if (view === 'home') document.getElementById('snav-home')?.classList.add('active');
+    if (view === 'projects') document.getElementById('snav-projects')?.classList.add('active');
+    // hide category filters when not on home
+    document.getElementById('sidebar-filters').style.opacity = view === 'home' ? '1' : '0.3';
+    document.getElementById('sidebar-filters').style.pointerEvents = view === 'home' ? '' : 'none';
+  }
+
   // ── OFFLINE DETECTION ──
   window.addEventListener('online',  () => { isOnline = true;  document.getElementById('offline-banner').style.display = 'none';  loadAll(); });
   window.addEventListener('offline', () => { isOnline = false; document.getElementById('offline-banner').style.display = 'block'; });
@@ -547,6 +746,7 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
     document.getElementById('project-detail-view').classList.remove('visible');
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
+    syncSidebarNav(view);
     if (view === 'home') {
       document.getElementById('grid').style.display = '';
       document.getElementById('filters-section').style.display = '';
@@ -1016,5 +1216,7 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
     setTimeout(() => t.classList.remove('show'), 2000);
   }
 </script>
+</div><!-- /main-content -->
+</div><!-- /app-shell -->
 </body>
 </html>
